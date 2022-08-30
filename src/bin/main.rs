@@ -1,8 +1,4 @@
-mod ray;
-mod vec3;
-
-use ray::Ray;
-use vec3::{dot, unit_vector, write_color, Color, Point3, Vec3};
+use ray_tracer::{dot, unit_vector, write_color, Color, Point3, Ray, Vec3};
 
 fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
     let oc = &r.origin() - center;

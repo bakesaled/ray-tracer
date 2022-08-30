@@ -5,4 +5,12 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "ray_tracer"
+path = "src/ray_tracer/lib.rs"
+
+[[bin]]
+name = "ray_tracer"
+path = "src/bin/main.rs"
+
 [dependencies]

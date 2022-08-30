@@ -144,6 +144,14 @@ impl ops::Div<f64> for Vec3 {
     }
 }
 
+/// Multiplies parts of two Vec3 objects
+///
+/// # Example
+/// ```
+/// use ray_tracer::{Vec3, dot};
+/// let res = dot(&Vec3::new(1.0, 2.0, 3.0), &Vec3::new(4.0, 5.0, 6.0));
+/// assert_eq!(res, 32.0);
+/// ```
 pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
     u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
 }
