@@ -3,7 +3,7 @@ use std::ops;
 pub type Point3 = Vec3;
 pub type Color = Vec3;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -31,19 +31,35 @@ impl Vec3 {
         self.length_squared().sqrt()
     }
 
+    /// Multiples parts of two Vec3 objects and adds the parts together
+    ///
+    /// # Examples
+    /// ```
+    /// use ray_tracer::{Vec3};
+    /// let src = Vec3::new(6.0, 9.0, 12.0);
+    /// assert_eq!(src.length_squared(), 261.0);
+    /// ```
     pub fn length_squared(&self) -> f64 {
         self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
     }
 }
 
 impl ops::Neg for Vec3 {
-    type Output = Self;
+    type Output = Vec3;
 
-    fn neg(self) -> Self::Output {
-        Self {
+    fn neg(self) -> Vec3 {
+        Vec3 {
             e: [-self.e[0], -self.e[1], -self.e[2]],
         }
     }
+}
+
+#[test]
+fn can_negate_vec3() {
+    let src = Vec3::new(1.0, 2.0, 3.0);
+    let res = Vec3::new(-1.0, -2.0, -3.0);
+    assert_eq!(-src, res);
+    assert_eq!(src[0], 1.0);
 }
 
 impl ops::Index<usize> for Vec3 {
@@ -93,6 +109,12 @@ impl ops::Add<&Vec3> for &Vec3 {
     }
 }
 
+#[test]
+fn can_add_vec3() {
+    let res = &Vec3::new(1.0, 2.0, 3.0) + &Vec3::new(4.0, 5.0, 6.0);
+    assert_eq!(res, Vec3::new(5.0, 7.0, 9.0));
+}
+
 impl ops::Sub<&Vec3> for &Vec3 {
     type Output = Vec3;
 
@@ -105,6 +127,12 @@ impl ops::Sub<&Vec3> for &Vec3 {
             ],
         }
     }
+}
+
+#[test]
+fn can_subtract_vec3() {
+    let res = &Vec3::new(1.0, 2.0, 3.0) - &Vec3::new(4.0, 8.0, 16.0);
+    assert_eq!(res, Vec3::new(-3.0, -6.0, -13.0));
 }
 
 impl ops::Mul<&Vec3> for &Vec3 {
@@ -121,6 +149,12 @@ impl ops::Mul<&Vec3> for &Vec3 {
     }
 }
 
+#[test]
+fn can_multiply_vec3_by_vec3() {
+    let res = &Vec3::new(1.0, 2.0, 3.0) * &Vec3::new(4.0, 5.0, 6.0);
+    assert_eq!(res, Vec3::new(4.0, 10.0, 18.0));
+}
+
 impl ops::Mul<f64> for &Vec3 {
     type Output = Vec3;
     fn mul(self, other: f64) -> Self::Output {
@@ -130,11 +164,23 @@ impl ops::Mul<f64> for &Vec3 {
     }
 }
 
+#[test]
+fn can_multiply_vec3_by_f64() {
+    let res = &Vec3::new(1.0, 2.0, 3.0) * 3.0;
+    assert_eq!(res, Vec3::new(3.0, 6.0, 9.0));
+}
+
 impl ops::Mul<&Vec3> for f64 {
     type Output = Vec3;
     fn mul(self, other: &Vec3) -> Self::Output {
         other * self
     }
+}
+
+#[test]
+fn can_multiply_f64_by_vec3() {
+    let res = 4.0 * &Vec3::new(1.0, 2.0, 3.0);
+    assert_eq!(res, Vec3::new(4.0, 8.0, 12.0));
 }
 
 impl ops::Div<f64> for Vec3 {
@@ -144,9 +190,15 @@ impl ops::Div<f64> for Vec3 {
     }
 }
 
+#[test]
+fn can_divide_vec3_by_f64() {
+    let res = Vec3::new(3.0, 6.0, 9.0) / 3.0;
+    assert_eq!(res, Vec3::new(1.0, 2.0, 3.0));
+}
+
 /// Multiplies parts of two Vec3 objects
 ///
-/// # Example
+/// # Examples
 /// ```
 /// use ray_tracer::{Vec3, dot};
 /// let res = dot(&Vec3::new(1.0, 2.0, 3.0), &Vec3::new(4.0, 5.0, 6.0));

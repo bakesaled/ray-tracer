@@ -38,7 +38,7 @@ fn main() {
     let origin = Point3::new(0.0, 0.0, 0.0);
     let horizontal = Vec3::new(viewport_width, 0.0, 0.0);
     let vertical = Vec3::new(0.0, viewport_height, 0.0);
-    let lower_left_corner = &((&origin - &horizontal) / 2_f64)
+    let lower_left_corner = &(&origin - &(horizontal / 2_f64))
         - &(&(vertical / 2_f64) - &Vec3::new(0.0, 0.0, focal_length));
 
     // Render
