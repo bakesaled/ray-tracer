@@ -27,6 +27,18 @@ impl Vec3 {
         self.e[2]
     }
 
+    /// Multiplies parts of two Vec3 objects
+    ///
+    /// # Examples
+    /// ```
+    /// use ray_tracer::{Vec3};
+    /// let res = Vec3::new(1.0, 2.0, 3.0).dot(Vec3::new(4.0, 5.0, 6.0));
+    /// assert_eq!(res, 32.0);
+    /// ```
+    pub fn dot(&self, v: Vec3) -> f64 {
+        self.x() * v.x() + self.y() * v.y() + self.z() * v.z()
+    }
+
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
@@ -41,6 +53,19 @@ impl Vec3 {
     /// ```
     pub fn length_squared(&self) -> f64 {
         self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
+    }
+
+    pub fn unit_vector(&self) -> Vec3 {
+        *self / self.length()
+    }
+
+    pub fn to_color_string(&self) -> String {
+        format!(
+            "{} {} {}",
+            (255.999 * self.x()) as u8,
+            (255.999 * self.y()) as u8,
+            (255.999 * self.z()) as u8
+        )
     }
 }
 
@@ -96,9 +121,9 @@ impl ops::DivAssign<f64> for Vec3 {
     }
 }
 
-impl ops::Add<&Vec3> for &Vec3 {
+impl ops::Add<Vec3> for Vec3 {
     type Output = Vec3;
-    fn add(self, other: &Vec3) -> Self::Output {
+    fn add(self, other: Vec3) -> Self::Output {
         Vec3 {
             e: [
                 self.e[0] + other.e[0],
@@ -111,14 +136,14 @@ impl ops::Add<&Vec3> for &Vec3 {
 
 #[test]
 fn can_add_vec3() {
-    let res = &Vec3::new(1.0, 2.0, 3.0) + &Vec3::new(4.0, 5.0, 6.0);
+    let res = Vec3::new(1.0, 2.0, 3.0) + Vec3::new(4.0, 5.0, 6.0);
     assert_eq!(res, Vec3::new(5.0, 7.0, 9.0));
 }
 
-impl ops::Sub<&Vec3> for &Vec3 {
+impl ops::Sub<Vec3> for Vec3 {
     type Output = Vec3;
 
-    fn sub(self, other: &Vec3) -> Self::Output {
+    fn sub(self, other: Vec3) -> Self::Output {
         Vec3 {
             e: [
                 self.e[0] - other.e[0],
@@ -131,14 +156,14 @@ impl ops::Sub<&Vec3> for &Vec3 {
 
 #[test]
 fn can_subtract_vec3() {
-    let res = &Vec3::new(1.0, 2.0, 3.0) - &Vec3::new(4.0, 8.0, 16.0);
+    let res = Vec3::new(1.0, 2.0, 3.0) - Vec3::new(4.0, 8.0, 16.0);
     assert_eq!(res, Vec3::new(-3.0, -6.0, -13.0));
 }
 
-impl ops::Mul<&Vec3> for &Vec3 {
+impl ops::Mul<Vec3> for Vec3 {
     type Output = Vec3;
 
-    fn mul(self, other: &Vec3) -> Self::Output {
+    fn mul(self, other: Vec3) -> Self::Output {
         Vec3 {
             e: [
                 self.e[0] * other.e[0],
@@ -151,11 +176,11 @@ impl ops::Mul<&Vec3> for &Vec3 {
 
 #[test]
 fn can_multiply_vec3_by_vec3() {
-    let res = &Vec3::new(1.0, 2.0, 3.0) * &Vec3::new(4.0, 5.0, 6.0);
+    let res = Vec3::new(1.0, 2.0, 3.0) * Vec3::new(4.0, 5.0, 6.0);
     assert_eq!(res, Vec3::new(4.0, 10.0, 18.0));
 }
 
-impl ops::Mul<f64> for &Vec3 {
+impl ops::Mul<f64> for Vec3 {
     type Output = Vec3;
     fn mul(self, other: f64) -> Self::Output {
         Vec3 {
@@ -166,27 +191,27 @@ impl ops::Mul<f64> for &Vec3 {
 
 #[test]
 fn can_multiply_vec3_by_f64() {
-    let res = &Vec3::new(1.0, 2.0, 3.0) * 3.0;
+    let res = Vec3::new(1.0, 2.0, 3.0) * 3.0;
     assert_eq!(res, Vec3::new(3.0, 6.0, 9.0));
 }
 
-impl ops::Mul<&Vec3> for f64 {
+impl ops::Mul<Vec3> for f64 {
     type Output = Vec3;
-    fn mul(self, other: &Vec3) -> Self::Output {
+    fn mul(self, other: Vec3) -> Self::Output {
         other * self
     }
 }
 
 #[test]
 fn can_multiply_f64_by_vec3() {
-    let res = 4.0 * &Vec3::new(1.0, 2.0, 3.0);
+    let res = 4.0 * Vec3::new(1.0, 2.0, 3.0);
     assert_eq!(res, Vec3::new(4.0, 8.0, 12.0));
 }
 
 impl ops::Div<f64> for Vec3 {
     type Output = Vec3;
     fn div(self, other: f64) -> Self::Output {
-        (1_f64 / other) * &self
+        (1_f64 / other) * self
     }
 }
 
@@ -194,18 +219,6 @@ impl ops::Div<f64> for Vec3 {
 fn can_divide_vec3_by_f64() {
     let res = Vec3::new(3.0, 6.0, 9.0) / 3.0;
     assert_eq!(res, Vec3::new(1.0, 2.0, 3.0));
-}
-
-/// Multiplies parts of two Vec3 objects
-///
-/// # Examples
-/// ```
-/// use ray_tracer::{Vec3, dot};
-/// let res = dot(&Vec3::new(1.0, 2.0, 3.0), &Vec3::new(4.0, 5.0, 6.0));
-/// assert_eq!(res, 32.0);
-/// ```
-pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
-    u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
 }
 
 pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
@@ -216,17 +229,4 @@ pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
             u.e[0] * v.e[1] - u.e[1] * v.e[0],
         ],
     }
-}
-
-pub fn unit_vector(v: Vec3) -> Vec3 {
-    v / v.length()
-}
-
-pub fn write_color(pixel_color: Color) {
-    println!(
-        "{} {} {}",
-        (255.999 * pixel_color.x()) as i32,
-        (255.999 * pixel_color.y()) as i32,
-        (255.999 * pixel_color.z()) as i32
-    );
 }
