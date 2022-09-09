@@ -1,26 +1,14 @@
-use ray_tracer::{Color, Point3, Ray, Vec3};
+use std::f64::INFINITY;
 
-fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
-    let oc = r.origin() - *center;
-    let a = r.direction().length_squared();
-    let half_b = oc.dot(r.direction());
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-    if discriminant < 0.0 {
-        return -1.0;
-    } else {
-        return (-half_b - discriminant.sqrt()) / a;
-    }
-}
+use ray_tracer::{Color, HitRecord, Hittable, HittableList, Point3, Ray, Sphere, Vec3};
 
-fn ray_color(r: &Ray) -> Color {
-    let mut t = hit_sphere(&Point3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let n = (r.at(t) - Vec3::new(0.0, 0.0, -1.0)).unit_vector();
-        return 0.5 * Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0);
+fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
+    let mut rec = HitRecord::new();
+    if world.hit(r, 0.0, INFINITY, &mut rec) {
+        return 0.5 * (rec.normal.unwrap() + Color::new(1.0, 1.0, 1.0));
     }
     let unit_direction = r.direction().unit_vector();
-    t = 0.5 * (unit_direction.y() + 1.0);
+    let t = 0.5 * (unit_direction.y() + 1.0);
     ((1.0 - t) * Color::new(1.0, 1.0, 1.0)) + (t * Color::new(0.5, 0.7, 1.0))
 }
 
@@ -29,6 +17,14 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+
+    // World
+    let world = HittableList {
+        objects: vec![
+            Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5),
+            Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0),
+        ],
+    };
 
     // Camera
     let viewport_height = 2.0;
@@ -55,7 +51,7 @@ fn main() {
                 &origin,
                 &((lower_left_corner + (u * horizontal)) + (v * vertical) - origin),
             );
-            let pixel_color = ray_color(&r);
+            let pixel_color = ray_color(&r, &world);
             println!("{}", pixel_color.to_color_string());
         }
     }
