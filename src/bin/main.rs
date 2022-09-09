@@ -1,4 +1,4 @@
-use std::f64::INFINITY;
+use std::{f64::INFINITY, rc::Rc};
 
 use ray_tracer::{Color, HitRecord, Hittable, HittableList, Point3, Ray, Sphere, Vec3};
 
@@ -21,8 +21,8 @@ fn main() {
     // World
     let world = HittableList {
         objects: vec![
-            Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5),
-            Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0),
+            Rc::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)),
+            Rc::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0)),
         ],
     };
 

@@ -1,7 +1,9 @@
+use std::rc::Rc;
+
 use crate::{HitRecord, Hittable};
 
 pub struct HittableList<T: Hittable> {
-    pub objects: Vec<T>,
+    pub objects: Vec<Rc<T>>,
 }
 
 impl<T> Hittable for HittableList<T>
