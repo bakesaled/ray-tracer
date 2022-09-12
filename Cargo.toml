@@ -14,3 +14,4 @@ name = "ray_tracer"
 path = "src/bin/main.rs"
 
 [dependencies]
+rand = "*"

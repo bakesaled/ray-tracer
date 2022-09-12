@@ -59,12 +59,19 @@ impl Vec3 {
         *self / self.length()
     }
 
-    pub fn to_color_string(&self) -> String {
+    pub fn to_color_string(&self, samples_per_pixel: usize) -> String {
+        // Divide the color by the number of samples.
+        let scale = 1.0 / samples_per_pixel as f64;
+        let r = self.x() * scale;
+        let g = self.y() * scale;
+        let b = self.z() * scale;
+
+        // Write the translated [0,255] value of each color component.
         format!(
             "{} {} {}",
-            (255.999 * self.x()) as u8,
-            (255.999 * self.y()) as u8,
-            (255.999 * self.z()) as u8
+            (256.0 * clamp(r, 0.0, 0.999)) as u8,
+            (256.0 * clamp(g, 0.0, 0.999)) as u8,
+            (256.0 * clamp(b, 0.0, 0.999)) as u8,
         )
     }
 }
@@ -229,4 +236,14 @@ pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
             u.e[0] * v.e[1] - u.e[1] * v.e[0],
         ],
     }
+}
+
+fn clamp(x: f64, min: f64, max: f64) -> f64 {
+    if x < min {
+        return min;
+    }
+    if x > max {
+        return max;
+    }
+    x
 }
