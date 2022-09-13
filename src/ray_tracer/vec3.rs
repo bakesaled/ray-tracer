@@ -60,11 +60,11 @@ impl Vec3 {
     }
 
     pub fn to_color_string(&self, samples_per_pixel: usize) -> String {
-        // Divide the color by the number of samples.
+        // Divide the color by the number of samples and gamma-correct for gamma=2.0.
         let scale = 1.0 / samples_per_pixel as f64;
-        let r = self.x() * scale;
-        let g = self.y() * scale;
-        let b = self.z() * scale;
+        let r = (self.x() * scale).sqrt();
+        let g = (self.y() * scale).sqrt();
+        let b = (self.z() * scale).sqrt();
 
         // Write the translated [0,255] value of each color component.
         format!(
@@ -246,4 +246,31 @@ fn clamp(x: f64, min: f64, max: f64) -> f64 {
         return max;
     }
     x
+}
+
+fn random() -> Vec3 {
+    Vec3::new(
+        crate::math::random(),
+        crate::math::random(),
+        crate::math::random(),
+    )
+}
+
+fn random_in_range(min: f64, max: f64) -> Vec3 {
+    Vec3::new(
+        crate::math::random_in_range(min, max),
+        crate::math::random_in_range(min, max),
+        crate::math::random_in_range(min, max),
+    )
+}
+
+pub fn random_in_unit_sphere() -> Vec3 {
+    let mut p = random_in_range(-1.0, 1.0);
+    loop {
+        p = random_in_range(-1.0, 1.0);
+        if p.length_squared() < 1.0 {
+            break;
+        }
+    }
+    p
 }
