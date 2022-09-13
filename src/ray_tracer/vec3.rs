@@ -264,6 +264,7 @@ fn random_in_range(min: f64, max: f64) -> Vec3 {
     )
 }
 
+/// Rejection Diffusion
 pub fn random_in_unit_sphere() -> Vec3 {
     let mut p = random_in_range(-1.0, 1.0);
     loop {
@@ -273,4 +274,9 @@ pub fn random_in_unit_sphere() -> Vec3 {
         }
     }
     p
+}
+
+/// Lambertian Diffusion
+pub fn random_in_unit_vector() -> Vec3 {
+    random_in_unit_sphere().unit_vector()
 }
