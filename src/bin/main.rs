@@ -1,5 +1,5 @@
 use ray_tracer::{
-    random_in_unit_vector, Camera, Color, HitRecord, Hittable, HittableList, Ray, Sphere, Vec3,
+    random_in_hemisphere, Camera, Color, HitRecord, Hittable, HittableList, Ray, Sphere, Vec3,
 };
 use std::{f64::INFINITY, rc::Rc};
 
@@ -12,7 +12,9 @@ fn ray_color(r: Ray, world: &dyn Hittable, depth: i32) -> Color {
     }
 
     if world.hit(r, 0.001, INFINITY, &mut rec) {
-        let target = rec.p.clone().unwrap() + rec.normal.clone().unwrap() + random_in_unit_vector();
+        let target = rec.p.clone().unwrap()
+            + rec.normal.clone().unwrap()
+            + random_in_hemisphere(rec.normal.clone().unwrap());
         return 0.5
             * ray_color(
                 Ray::new(rec.p.clone().unwrap(), target - rec.p.clone().unwrap()),
