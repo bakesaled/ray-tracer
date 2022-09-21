@@ -59,6 +59,16 @@ impl Vec3 {
         *self / self.length()
     }
 
+    /// Returns true if the vector is close to zero in all dimensions.
+    pub fn near_zero(&self) -> bool {
+        let s = 1e-8;
+        (self.x().abs() < s) && (self.y().abs() < s) && (self.z().abs() < s)
+    }
+
+    pub fn reflect(&self, n: Vec3) -> Vec3 {
+        *self - (2.0 * self.dot(n) * n)
+    }
+
     pub fn to_color_string(&self, samples_per_pixel: usize) -> String {
         // Divide the color by the number of samples and gamma-correct for gamma=2.0.
         let scale = 1.0 / samples_per_pixel as f64;
