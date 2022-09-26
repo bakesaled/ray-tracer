@@ -1,4 +1,5 @@
 mod camera;
+mod dielectric;
 mod hittable;
 mod hittable_list;
 mod lambertian;
@@ -10,6 +11,7 @@ mod sphere;
 mod vec3;
 
 pub use crate::camera::Camera;
+pub use crate::dielectric::Dielectric;
 pub use crate::hittable::{HitRecord, Hittable};
 pub use crate::hittable_list::HittableList;
 pub use crate::lambertian::Lambertian;

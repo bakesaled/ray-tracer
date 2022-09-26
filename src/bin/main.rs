@@ -1,5 +1,6 @@
 use ray_tracer::{
-    Camera, Color, HitRecord, Hittable, HittableList, Lambertian, Metal, Ray, Sphere, Vec3,
+    Camera, Color, Dielectric, HitRecord, Hittable, HittableList, Lambertian, Metal, Ray, Sphere,
+    Vec3,
 };
 use std::{f64::INFINITY, rc::Rc};
 
@@ -36,9 +37,9 @@ fn main() {
 
     // World
     let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
-    let material_left = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.3));
-    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+    let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
+    let material_left = Rc::new(Dielectric::new(1.5));
+    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
     let world = HittableList {
         objects: vec![
@@ -48,7 +49,12 @@ fn main() {
                 material_ground,
             )),
             Rc::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5, material_center)),
-            Rc::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), 0.5, material_left)),
+            Rc::new(Sphere::new(
+                Vec3::new(-1.0, 0.0, -1.0),
+                0.5,
+                material_left.clone(),
+            )),
+            Rc::new(Sphere::new(Vec3::new(-1.0, 0.0, -1.0), -0.4, material_left)),
             Rc::new(Sphere::new(Vec3::new(1.0, 0.0, -1.0), 0.5, material_right)),
         ],
     };

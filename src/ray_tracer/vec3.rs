@@ -69,6 +69,13 @@ impl Vec3 {
         *self - (2.0 * self.dot(n) * n)
     }
 
+    pub fn refract(&self, n: Vec3, etai_over_etat: f64) -> Vec3 {
+        let cos_theta = ((-*self).dot(n)).min(1.0);
+        let r_out_perp = etai_over_etat * (*self + cos_theta * n);
+        let r_out_parallel = -((1.0 - r_out_perp.length_squared()).abs()).sqrt() * n;
+        r_out_perp + r_out_parallel
+    }
+
     pub fn to_color_string(&self, samples_per_pixel: usize) -> String {
         // Divide the color by the number of samples and gamma-correct for gamma=2.0.
         let scale = 1.0 / samples_per_pixel as f64;
