@@ -1,6 +1,6 @@
 use ray_tracer::{
-    Camera, Color, Dielectric, HitRecord, Hittable, HittableList, Lambertian, Metal, Ray, Sphere,
-    Vec3,
+    Camera, Color, Dielectric, HitRecord, Hittable, HittableList, Lambertian, Metal, Point3, Ray,
+    Sphere, Vec3,
 };
 use std::{f64::INFINITY, rc::Rc};
 
@@ -60,7 +60,13 @@ fn main() {
     };
 
     // Camera
-    let camera = Camera::new();
+    let camera = Camera::new(
+        Point3::new(-2.0, 2.0, 1.0),
+        Point3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        20.0,
+        ASPECT_RATIO,
+    );
 
     // Render
     println!("P3");
