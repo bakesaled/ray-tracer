@@ -265,7 +265,7 @@ fn clamp(x: f64, min: f64, max: f64) -> f64 {
     x
 }
 
-fn random() -> Vec3 {
+pub fn random() -> Vec3 {
     Vec3::new(
         crate::math::random(),
         crate::math::random(),
@@ -273,7 +273,7 @@ fn random() -> Vec3 {
     )
 }
 
-fn random_in_range(min: f64, max: f64) -> Vec3 {
+pub fn random_in_range(min: f64, max: f64) -> Vec3 {
     Vec3::new(
         crate::math::random_in_range(min, max),
         crate::math::random_in_range(min, max),
@@ -283,7 +283,7 @@ fn random_in_range(min: f64, max: f64) -> Vec3 {
 
 /// Rejection Diffusion
 pub fn random_in_unit_sphere() -> Vec3 {
-    let mut p = random_in_range(-1.0, 1.0);
+    let mut p;
     loop {
         p = random_in_range(-1.0, 1.0);
         if p.length_squared() < 1.0 {

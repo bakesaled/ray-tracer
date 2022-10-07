@@ -17,7 +17,7 @@ path = "src/bin/main.rs"
 rand = "*"
 
 [profile.dev]
-opt-level = 1
+opt-level = 3
 
 [profile.release]
 opt-level = 3
